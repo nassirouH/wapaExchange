@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum KycStatus {
+  not_started
+  pending
+  approved
+  rejected
+}
+
+enum AuthProvider {
+  email
+  apple
+  google
+}
+
+enum PayoutMethod {
+  mobile_money
+  bank_transfer
+}
+
+enum MobileMoneyProvider {
+  orange
+  mtn
+  wave
+  mpesa
+  airtel
+}
+
+enum TransferStatus {
+  pending_payin
+  payin_received
+  forwarded
+  payout_pending
+  payout_complete
+  failed
+  refunded
+}
+
+enum PayinProvider {
+  stripe
+  truelayer
+  applepay
+}
+
+enum PayoutProvider {
+  thunes
+  mfs
+  flutterwave
+}
+
+model User {
+  id              String       @id @default(uuid()) @db.Uuid
+  email           String       @unique
+  phone           String?      @unique
+  passwordHash    String?      @map("password_hash")
+  authProvider    AuthProvider @default(email) @map("auth_provider")
+  fullName        String?      @map("full_name")
+  dateOfBirth     DateTime?    @map("date_of_birth") @db.Date
+  addressLine1    String?      @map("address_line1")
+  city            String?
+  postalCode      String?      @map("postal_code")
+  country         String?
+  kycStatus       KycStatus    @default(not_started) @map("kyc_status")
+  kycProviderRef  String?      @map("kyc_provider_ref")
+  riskScore       Int          @default(0) @map("risk_score")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  deletedAt       DateTime?    @map("deleted_at")
+
+  recipients      Recipient[]
+  quotes          Quote[]
+  transfers       Transfer[]
+  kycSessions    KycSession[]
+  refreshTokens   RefreshToken[]
+  notifications   Notification[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  tokenHash          String   @map("token_hash")
+  deviceFingerprint  String?  @map("device_fingerprint")
+  expiresAt          DateTime @map("expires_at")
+  revokedAt          DateTime? @map("revoked_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+  user               User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Recipient {
+  id                    String                @id @default(uuid()) @db.Uuid
+  userId                String                @map("user_id") @db.Uuid
+  fullName              String                @map("full_name")
+  country               String                @db.Char(2)
+  payoutMethod          PayoutMethod          @map("payout_method")
+  mobileMoneyProvider   MobileMoneyProvider?  @map("mobile_money_provider")
+  mobileMoneyNumber     String?               @map("mobile_money_number")
+  bankName              String?               @map("bank_name")
+  bankAccountNumber     String?               @map("bank_account_number")
+  bankSwiftOrIban       String?               @map("bank_swift_or_iban")
+  isFavorite            Boolean               @default(false) @map("is_favorite")
+  lastUsedAt            DateTime?             @map("last_used_at")
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
+  deletedAt             DateTime?             @map("deleted_at")
+
+  user                  User                  @relation(fields: [userId], references: [id])
+  transfers             Transfer[]
+
+  @@index([userId, lastUsedAt(sort: Desc)])
+  @@map("recipients")
+}
+
+model Quote {
+  id                  String       @id @default(uuid()) @db.Uuid
+  userId              String       @map("user_id") @db.Uuid
+  sendCurrency        String       @db.Char(3) @map("send_currency")
+  sendAmount          Decimal      @db.Decimal(14, 2) @map("send_amount")
+  receiveCurrency     String       @db.Char(3) @map("receive_currency")
+  receiveAmount       Decimal      @db.Decimal(14, 2) @map("receive_amount")
+  fxRate              Decimal      @db.Decimal(18, 8) @map("fx_rate")
+  fxMarginBps         Int          @map("fx_margin_bps")
+  feeAmount           Decimal      @db.Decimal(10, 2) @map("fee_amount")
+  totalPay            Decimal      @db.Decimal(14, 2) @map("total_pay")
+  payoutMethod        PayoutMethod @map("payout_method")
+  destinationCountry  String       @db.Char(2) @map("destination_country")
+  expiresAt           DateTime     @map("expires_at")
+  createdAt           DateTime     @default(now()) @map("created_at")
+
+  user                User         @relation(fields: [userId], references: [id])
+  transfer            Transfer?
+
+  @@map("quotes")
+}
+
+model Transfer {
+  id                String           @id @default(uuid()) @db.Uuid
+  userId            String           @map("user_id") @db.Uuid
+  quoteId           String           @unique @map("quote_id") @db.Uuid
+  recipientId       String           @map("recipient_id") @db.Uuid
+  status            TransferStatus   @default(pending_payin)
+  payinProvider     PayinProvider?   @map("payin_provider")
+  payinReference    String?          @map("payin_reference")
+  payoutProvider    PayoutProvider?  @map("payout_provider")
+  payoutReference   String?          @map("payout_reference")
+  payoutCountry     String           @db.Char(2) @map("payout_country")
+  sendAmount        Decimal          @db.Decimal(14, 2) @map("send_amount")
+  receiveAmount     Decimal          @db.Decimal(14, 2) @map("receive_amount")
+  feeAmount         Decimal          @db.Decimal(10, 2) @map("fee_amount")
+  fxRate            Decimal          @db.Decimal(18, 8) @map("fx_rate")
+  failureCode       String?          @map("failure_code")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  user              User             @relation(fields: [userId], references: [id])
+  quote             Quote            @relation(fields: [quoteId], references: [id])
+  recipient         Recipient        @relation(fields: [recipientId], references: [id])
+  events            TransferEvent[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("transfers")
+}
+
+model TransferEvent {
+  id          String         @id @default(uuid()) @db.Uuid
+  transferId  String         @map("transfer_id") @db.Uuid
+  fromStatus  TransferStatus @map("from_status")
+  toStatus    TransferStatus @map("to_status")
+  source      String
+  metadata    Json?
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  transfer    Transfer       @relation(fields: [transferId], references: [id])
+
+  @@index([transferId, createdAt])
+  @@map("transfer_events")
+}
+
+model KycSession {
+  id                String     @id @default(uuid()) @db.Uuid
+  userId            String     @map("user_id") @db.Uuid
+  provider          String
+  providerSessionId String     @map("provider_session_id")
+  status            KycStatus  @default(pending)
+  rejectionReason   String?    @map("rejection_reason")
+  documents         Json?
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+
+  user              User       @relation(fields: [userId], references: [id])
+
+  @@map("kyc_sessions")
+}
+
+model Notification {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  channel         String
+  template        String
+  payload         Json
+  sentAt          DateTime @default(now()) @map("sent_at")
+  deliveryStatus  String   @default("queued") @map("delivery_status")
+  readAt          DateTime? @map("read_at")
+
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, sentAt(sort: Desc)])
+  @@map("notifications")
+}

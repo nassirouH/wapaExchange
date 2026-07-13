@@ -1,0 +1,83 @@
+name: backend-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+# Lock concurrent deploys so two pushes don't race in ECS.
+concurrency:
+  group: backend-deploy-prod
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-west-3
+  ECR_REPOSITORY: wapaexchange
+  ECS_CLUSTER: wapa-prod-cluster
+  API_SERVICE: wapa-prod-api
+  WORKER_SERVICE: wapa-prod-worker
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      id-token: write   # for OIDC into AWS
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        id: build
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          IMAGE_TAG="${GITHUB_SHA::12}"
+          IMAGE_URI="$REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build -t "$IMAGE_URI" -t "$REGISTRY/$ECR_REPOSITORY:latest" backend/
+          docker push "$IMAGE_URI"
+          docker push "$REGISTRY/$ECR_REPOSITORY:latest"
+          echo "image_uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+
+      - name: Run Prisma migrations
+        # One-shot ECS task with the new image so the schema is migrated before
+        # the service starts serving traffic.
+        run: |
+          aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --launch-type FARGATE \
+            --task-definition wapa-prod-migrate \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ secrets.PRIVATE_SUBNET_IDS }}],securityGroups=[${{ secrets.APP_SG_ID }}],assignPublicIp=DISABLED}" \
+            --overrides '{"containerOverrides":[{"name":"migrate","command":["npx","prisma","migrate","deploy"],"environment":[{"name":"IMAGE_URI","value":"${{ steps.build.outputs.image_uri }}"}]}]}'
+
+      - name: Update API service
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$API_SERVICE" \
+            --force-new-deployment
+
+      - name: Update Worker service
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$WORKER_SERVICE" \
+            --force-new-deployment
+
+      - name: Wait for stable rollout
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$API_SERVICE" "$WORKER_SERVICE"

@@ -2,16 +2,18 @@
 //  wapaExchangeApp.swift
 //  wapaExchange
 //
-//  Created by Nassirou M Hassan on 18/06/2026.
-//
 
 import SwiftUI
 
 @main
 struct wapaExchangeApp: App {
+    @State private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(appState)
+                .task { await appState.bootstrap() }
         }
     }
 }

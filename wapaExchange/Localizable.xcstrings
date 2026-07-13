@@ -1,0 +1,216 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "onboarding.slide1.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Europe to Africa & Asia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "De l'Europe vers l'Afrique et l'Asie" } }
+      }
+    },
+    "onboarding.slide1.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Send money to mobile money, bank accounts, and wallets — in minutes." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Envoyez de l'argent vers le mobile money, les comptes bancaires et les portefeuilles — en quelques minutes." } }
+      }
+    },
+    "onboarding.slide2.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Licensed partners only" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Partenaires agréés uniquement" } }
+      }
+    },
+    "onboarding.slide2.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your money flows through regulated banks and payment institutions. We never hold your funds." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Votre argent transite par des banques et des établissements de paiement agréés. Nous ne détenons jamais vos fonds." } }
+      }
+    },
+    "onboarding.slide3.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Honest rates, low fees" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Des taux justes, des frais bas" } }
+      }
+    },
+    "onboarding.slide3.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Real-time exchange rates with a transparent fee. No hidden markups." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taux de change en temps réel avec des frais transparents. Aucune marge cachée." } }
+      }
+    },
+    "common.continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Continue" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Continuer" } }
+      }
+    },
+    "common.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
+      }
+    },
+    "common.done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
+      }
+    },
+    "onboarding.getStarted" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get started" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Commencer" } }
+      }
+    },
+    "onboarding.alreadyHaveAccount" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "I already have an account" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "J'ai déjà un compte" } }
+      }
+    },
+    "auth.login.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome back" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Bon retour" } }
+      }
+    },
+    "auth.login.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign in to send money to your loved ones." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez-vous pour envoyer de l'argent à vos proches." } }
+      }
+    },
+    "auth.login.submit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign in" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Se connecter" } }
+      }
+    },
+    "auth.field.email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Email" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "E-mail" } }
+      }
+    },
+    "auth.field.password" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Password" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mot de passe" } }
+      }
+    },
+    "auth.field.fullName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Full name" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom complet" } }
+      }
+    },
+    "auth.register.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Create your account" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Créez votre compte" } }
+      }
+    },
+    "auth.register.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Takes 2 minutes. Verify your ID right after." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prend 2 minutes. Vérifiez votre identité juste après." } }
+      }
+    },
+    "auth.register.submit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Create account" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Créer un compte" } }
+      }
+    },
+    "home.send.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Send money" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Envoyer de l'argent" } }
+      }
+    },
+    "home.send.cta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get a quote" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Obtenir un tarif" } }
+      }
+    },
+    "home.tab.home" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Home" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Accueil" } }
+      }
+    },
+    "home.tab.recipients" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Recipients" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Bénéficiaires" } }
+      }
+    },
+    "home.tab.history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "History" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Historique" } }
+      }
+    },
+    "kyc.banner.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Verify your identity" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez votre identité" } }
+      }
+    },
+    "kyc.banner.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Takes 2 minutes. Required to send money." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prend 2 minutes. Obligatoire pour envoyer de l'argent." } }
+      }
+    },
+    "transfer.youSend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You send" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vous envoyez" } }
+      }
+    },
+    "transfer.recipientGets" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Recipient gets" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le bénéficiaire reçoit" } }
+      }
+    },
+    "transfer.success.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Transfer started" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Transfert lancé" } }
+      }
+    }
+  }
+}

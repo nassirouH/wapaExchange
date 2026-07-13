@@ -1,0 +1,30 @@
+name: loadtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'API base URL to hit (must include /v1)'
+        required: true
+        default: 'https://staging-api.wapaexchange.com/v1'
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: grafana/setup-k6-action@v1
+      - name: Run transfer-flow load test
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+        run: k6 run loadtest/transfer-flow.js
+      - name: Upload summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-summary
+          path: |
+            summary.json
+            summary.html
+          if-no-files-found: ignore

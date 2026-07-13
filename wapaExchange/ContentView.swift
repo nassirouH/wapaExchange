@@ -2,23 +2,51 @@
 //  ContentView.swift
 //  wapaExchange
 //
-//  Created by Nassirou M Hassan on 18/06/2026.
-//
 
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack {
+            switch appState.route {
+            case .splash:
+                SplashView()
+                    .transition(.opacity)
+            case .onboarding:
+                OnboardingView()
+                    .transition(.opacity)
+            case .auth(let dest):
+                switch dest {
+                case .login:
+                    LoginView().transition(.opacity)
+                case .register:
+                    RegistrationView().transition(.opacity)
+                }
+            case .main:
+                MainTabView()
+                    .transition(.opacity)
+            }
         }
-        .padding()
+        .animation(.easeInOut(duration: 0.25), value: appState.route)
+    }
+}
+
+struct MainTabView: View {
+    var body: some View {
+        TabView {
+            HomeView()
+                .tabItem { Label("Home", systemImage: "house.fill") }
+            RecipientsView()
+                .tabItem { Label("Recipients", systemImage: "person.2.fill") }
+            NavigationStack { TransactionHistoryView() }
+                .tabItem { Label("History", systemImage: "clock.fill") }
+        }
+        .tint(AppColors.brand)
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView().environment(AppState())
 }

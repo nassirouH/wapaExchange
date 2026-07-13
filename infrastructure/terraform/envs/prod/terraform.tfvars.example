@@ -1,0 +1,5 @@
+domain_name         = "api.wapaexchange.com"
+acm_certificate_arn = "arn:aws:acm:eu-west-3:123456789012:certificate/REPLACE-ME"
+db_password         = "REPLACE-ME-LONG-RANDOM"
+container_image     = "123456789012.dkr.ecr.eu-west-3.amazonaws.com/wapaexchange:latest"
+cors_origin         = "https://admin.wapaexchange.com,https://wapaexchange.com"
