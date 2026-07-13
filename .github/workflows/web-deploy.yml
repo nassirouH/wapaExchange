@@ -6,6 +6,7 @@ on:
     paths:
       - 'web/**'
       - '.github/workflows/web-deploy.yml'
+  workflow_dispatch:
 
 env:
   AWS_REGION: eu-west-3

@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'backend/**'
+  workflow_dispatch:
 
 # Lock concurrent deploys so two pushes don't race in ECS.
 concurrency:
@@ -46,10 +47,27 @@ jobs:
         run: |
           IMAGE_TAG="${GITHUB_SHA::12}"
           IMAGE_URI="$REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          docker build -t "$IMAGE_URI" -t "$REGISTRY/$ECR_REPOSITORY:latest" backend/
+          docker build --build-arg APP_VERSION="$IMAGE_TAG" -t "$IMAGE_URI" -t "$REGISTRY/$ECR_REPOSITORY:latest" backend/
           docker push "$IMAGE_URI"
           docker push "$REGISTRY/$ECR_REPOSITORY:latest"
           echo "image_uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+          echo "release=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Upload sourcemaps to Sentry
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          RELEASE: ${{ steps.build.outputs.release }}
+        run: |
+          cd backend
+          npm ci
+          npm run build
+          npx --yes @sentry/cli releases new "$RELEASE"
+          npx --yes @sentry/cli releases set-commits "$RELEASE" --auto
+          npx --yes @sentry/cli releases files "$RELEASE" upload-sourcemaps ./dist --ext js --ext js.map
+          npx --yes @sentry/cli releases finalize "$RELEASE"
 
       - name: Run Prisma migrations
         # One-shot ECS task with the new image so the schema is migrated before
