@@ -54,7 +54,7 @@ jobs:
           echo "release=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Upload sourcemaps to Sentry
-        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        if: ${{ env.SENTRY_AUTH_TOKEN != '' }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
